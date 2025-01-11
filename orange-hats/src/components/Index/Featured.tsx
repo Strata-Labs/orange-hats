@@ -12,33 +12,37 @@ const Featured: React.FC = () => {
     sortDirection: "desc",
   });
 
-  const renderResearchItem = (post: ResearchPostWithContent) => (
-    <Link
-      href={`/research/${post.slug}`}
-      key={post.id}
-      className="flex-none group"
-    >
-      <div className="w-[172px] h-[172px] md:w-[320px] md:h-[520px] bg-main-dark-grey rounded-xl overflow-hidden flex flex-col">
-        <div className="relative w-full h-[108px] md:h-[330px]">
-          <Image
-            src={post.mainImage || "/PlaceHolder.png"}
-            alt={post.title}
-            fill
-            className="object-cover rounded-t-xl transition-transform group-hover:scale-105"
-            priority
-          />
+  const renderResearchItem = (post: ResearchPostWithContent) => {
+    const date = new Date(post.publishedAt);
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const postUrl = `/research/${year}/${month}/${day}/${post.slug}`;
+
+    return (
+      <Link href={postUrl} key={post.id} className="flex-none group">
+        <div className="w-[172px] h-[172px] md:w-[320px] md:h-[520px] bg-main-dark-grey rounded-xl overflow-hidden flex flex-col">
+          <div className="relative w-full h-[108px] md:h-[330px]">
+            <Image
+              src={post.mainImage || "/PlaceHolder.png"}
+              alt={post.title}
+              fill
+              className="object-cover rounded-t-xl transition-transform group-hover:scale-105"
+              priority
+            />
+          </div>
+          <div className="p-4 md:p-6 flex-1 bg-background">
+            <h4 className="text-[16px] md:text-[22px] font-space-grotesk font-bold text-secondary-white group-hover:text-main-orange transition-colors">
+              {post.title}
+            </h4>
+            <p className="text-[14px] md:text-[16px] text-secondary-white mt-2 line-clamp-2 md:line-clamp-none opacity-80">
+              {post.description}
+            </p>
+          </div>
         </div>
-        <div className="p-4 md:p-6 flex-1 bg-background">
-          <h4 className="text-[16px] md:text-[22px] font-space-grotesk font-bold text-secondary-white group-hover:text-main-orange transition-colors">
-            {post.title}
-          </h4>
-          <p className="text-[14px] md:text-[16px] text-secondary-white mt-2 line-clamp-2 md:line-clamp-none opacity-80">
-            {post.description}
-          </p>
-        </div>
-      </div>
-    </Link>
-  );
+      </Link>
+    );
+  };
 
   const renderEmptyState = () => (
     <div className="flex flex-col items-center justify-center py-8">
