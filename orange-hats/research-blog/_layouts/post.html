@@ -1,0 +1,18 @@
+---
+layout: default
+---
+
+<article class="post h-entry">
+  <header class="post-header">
+    <h1 class="post-title p-name">{{ page.title | escape }}</h1>
+    <div class="post-meta">
+      Protocol: {{ page.protocol }} | Type: {{ page.type }}
+      <br />
+      <time datetime="{{ page.date | date_to_xmlschema }}">
+        Published: {{ page.date | date: "%B %d, %Y" }}
+      </time>
+    </div>
+  </header>
+
+  <div class="post-content e-content">{{ content }}</div>
+</article>

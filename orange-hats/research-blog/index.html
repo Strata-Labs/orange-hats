@@ -1,0 +1,46 @@
+---
+layout: default
+---
+
+<div class="home">
+  <h1 class="page-heading">Research Posts</h1>
+
+  {%- if site.posts.size > 0 -%}
+  <ul class="post-list">
+    {%- for post in site.posts -%}
+    <li>
+      {%- assign date_format = site.minima.date_format | default: "%B %-d, %Y"
+      -%}
+      <span class="post-meta">{{ post.date | date: date_format }}</span>
+      <h3>
+        <a class="post-link" href="{{ post.url | relative_url }}">
+          {{ post.title | escape }}
+        </a>
+      </h3>
+      <div class="post-meta">
+        Protocol: {{ post.protocol }} | Type: {{ post.type }}
+      </div>
+      {%- if site.show_excerpts -%} {{ post.description }} {%- endif -%}
+    </li>
+    {%- endfor -%}
+  </ul>
+
+  {% if paginator.total_pages > 1 %}
+  <div class="pagination">
+    {% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path | relative_url }}"
+      >&laquo; Previous</a
+    >
+    {% endif %} {% for page in (1..paginator.total_pages) %} {% if page ==
+    paginator.page %}
+    <span class="current-page">{{ page }}</span>
+    {% else %}
+    <a href="{{ site.paginate_path | replace: ':num', page | relative_url }}"
+      >{{ page }}</a
+    >
+    {% endif %} {% endfor %} {% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path | relative_url }}">Next &raquo;</a>
+    {% endif %}
+  </div>
+  {% endif %} {%- endif -%}
+</div>

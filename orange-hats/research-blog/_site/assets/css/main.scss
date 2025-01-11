@@ -1,0 +1,39 @@
+@import "minima";
+
+.post-list {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.post-list > li {
+  margin-bottom: 30px;
+}
+
+.post-meta {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.post-link {
+  font-size: 1.5em;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.pagination {
+  margin-top: 30px;
+  text-align: center;
+
+  .current-page {
+    padding: 0 10px;
+    font-weight: bold;
+  }
+
+  a {
+    padding: 0 10px;
+  }
+}

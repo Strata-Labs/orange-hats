@@ -1,0 +1,29 @@
+# research-blog/_config.yml
+title: OrangeHats Research
+description: Security Research for the Bitcoin Ecosystem
+baseurl: "/research"
+url: "http://localhost:4000"
+
+# Build settings
+markdown: kramdown
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-paginate
+  - jekyll-feed
+
+# Pagination settings
+paginate: 10
+paginate_path: "/page:num/"
+
+# Output settings
+permalink: /:year/:month/:day/:slug
+
+# Exclude directories and/or files from the conversion
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - package.json
+  - package-lock.json

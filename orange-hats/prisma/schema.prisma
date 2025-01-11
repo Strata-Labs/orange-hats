@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Audit {
+  id          String      @id @default(cuid())
+  protocol    String
+  contracts   String[]    
+  auditors    Auditor[]   @relation("AuditorAudits") 
+  publishedAt DateTime
+  pdfUrl      String     
+  auditUrl    String?     
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Auditor {
+  id          String   @id @default(cuid())
+  name        String
+  team        String?
+  proofOfWork String[] 
+  contact     String
+  websiteUrl  String?
+  
+  audits      Audit[]  @relation("AuditorAudits")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Research {
+  id          String   @id @default(cuid())
+  protocol    String
+  type        String
+  title       String
+  description String   @db.Text
+  content     String   @db.Text   
+  slug        String   @unique
+  publishedAt DateTime
+  jekyllUrl   String
+  mainImage   String?  
+  mainImageKey String? 
+  secondaryImage   String? 
+  secondaryImageKey String? 
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([protocol])
+  @@index([type])
+  @@index([slug])
+}
+
+model SecurityTool {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  createdBy   String
+  description String   @db.Text
+  securityUrl String?
+  imageUrl    String?  
+  imageKey    String?  
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([name])
+}
+
+model AuditorApplication {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String
+  githubUrl       String
+  applicationUrl  String    
+  previousAudits  String[]
+  yearsInClarity  Int
+  yearsInSecurity Int
+  referral        String?
+  status          String    @default("pending")
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([email])
+  @@index([status])
+}
+
+model AuditApplication {
+  id                  String    @id @default(cuid())
+  email               String
+  name                String
+  team                String
+  landingPageUrl      String?
+  githubUrl           String
+  twitterUrl          String?
+  contractCount       Int
+  hasFundraised       Boolean
+  has100TestCoverage  Boolean
+  hasAuditHash        Boolean
+  isNewLaunch         Boolean
+  status              String    @default("pending")
+  
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([email])
+  @@index([status])
+}
+
+model GrantApplication {
+  id                    String    @id @default(cuid())
+  name                  String
+  email                 String
+  landingPageUrl        String?
+  isLive                Boolean
+  githubUrl             String?
+  twitterUrl            String?
+  communityImpact       String    @db.Text
+  securityImprovement   String    @db.Text
+  canLaunchWithoutGrant Boolean
+  requestedAmount       Decimal   @db.Decimal(10, 2)
+  timeLineProposal      String    @db.Text
+  teamSize              Int
+  status                String    @default("pending") 
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([email])
+  @@index([status])
+}
