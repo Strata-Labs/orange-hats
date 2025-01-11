@@ -243,8 +243,6 @@ export const adminRouter = router({
           content = `${content}\n\n![Secondary image](${input.secondaryImageKey})`;
         }
 
-        console.log("Creating research with input:", input);
-
         const slug = slugify(input.title, {
           lower: true,
           strict: true,
@@ -276,8 +274,6 @@ export const adminRouter = router({
             jekyllUrl: contentUrl,
           },
         });
-
-        console.log("Research created successfully:", updatedResearch);
 
         return updatedResearch;
       } catch (error) {

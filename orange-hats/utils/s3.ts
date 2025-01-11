@@ -67,12 +67,6 @@ export const s3Utils = {
     try {
       validateEnvVariables();
 
-      console.log("Generating upload URL for:", {
-        bucket: BUCKET_NAME,
-        key,
-        contentType,
-      });
-
       const command = new PutObjectCommand({
         Bucket: BUCKET_NAME,
         Key: key,

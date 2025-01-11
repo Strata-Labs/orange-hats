@@ -59,12 +59,6 @@ ${research.description}
     try {
       await this.ensureDirectories();
 
-      console.log("Posts directory:", this.postsDir);
-      console.log("Creating post with data:", {
-        ...research,
-        publishedAt: this.formatDate(research.publishedAt),
-      });
-
       const fileName = this.generateFileName(research);
       const filePath = path.join(this.postsDir, fileName);
       const content = this.generatePostContent(research);
@@ -72,13 +66,6 @@ ${research.description}
       await fs.writeFile(filePath, content, "utf-8");
 
       const jekyllUrl = this.generateUrl(research.publishedAt, research.slug);
-
-      console.log("Post created successfully:", {
-        filePath,
-        fileName,
-        jekyllUrl,
-        formattedDate: this.formatDate(research.publishedAt).toISOString(),
-      });
 
       return jekyllUrl;
     } catch (error) {
