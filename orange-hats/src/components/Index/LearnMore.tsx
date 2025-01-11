@@ -14,7 +14,7 @@ const LearnMore: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-5 mt-[50px] flex flex-col items-center md:items-start md:flex-row md:justify-between">
+    <div className="max-w-7xl mx-auto mt-[50px] flex flex-col items-center md:items-start md:flex-row md:justify-between">
       <div className="block md:hidden mb-8">
         <Image
           src="/LearnMore.png"

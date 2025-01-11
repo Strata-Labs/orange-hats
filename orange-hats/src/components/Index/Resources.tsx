@@ -53,7 +53,7 @@ const Resources: React.FC = () => {
   };
 
   return (
-    <section className="max-w-7xl md:mx-5 mt-24">
+    <section className="max-w-7xl md:mx-auto mt-24">
       <div className="bg-main-dark-grey w-screen md:w-auto rounded-t-3xl p-8 md:p-12 mx-0 md:mx-0">
         <h2 className="text-[24px] md:text-[36px] font-space-grotesk text-secondary-white mb-4 text-center">
           Security Resources For <span className="underline">You</span>
@@ -120,7 +120,7 @@ const Resources: React.FC = () => {
           </div>
         </div>
 
-        <p className="text-secondary-white text-center text-[20px] mb-5">
+        <p className="text-secondary-white text-center text-[20px]">
           Or, if you're interested in applying click{" "}
           <span
             className="underline cursor-pointer hover:text-main-orange transition-colors duration-200"
