@@ -51,7 +51,11 @@ const AdminAuditorForm: React.FC<AdminAuditorFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 h-[400px] overflow-y-scroll"
+    >
+      {" "}
       <div>
         <label htmlFor="name" className="block text-secondary-white mb-2">
           Name
@@ -66,7 +70,6 @@ const AdminAuditorForm: React.FC<AdminAuditorFormProps> = ({
           className="w-full px-4 py-2 bg-background border border-main-dark-grey rounded-lg text-secondary-white focus:outline-none focus:border-main-orange"
         />
       </div>
-
       <div>
         <label htmlFor="team" className="block text-secondary-white mb-2">
           Team
@@ -80,7 +83,6 @@ const AdminAuditorForm: React.FC<AdminAuditorFormProps> = ({
           className="w-full px-4 py-2 bg-background border border-main-dark-grey rounded-lg text-secondary-white focus:outline-none focus:border-main-orange"
         />
       </div>
-
       <div>
         <label className="block text-secondary-white mb-2">Proof of Work</label>
         {formData.proofOfWork.map((work, index) => (
@@ -108,7 +110,6 @@ const AdminAuditorForm: React.FC<AdminAuditorFormProps> = ({
           Add Proof of Work
         </button>
       </div>
-
       <div>
         <label htmlFor="contact" className="block text-secondary-white mb-2">
           Contact
@@ -123,7 +124,6 @@ const AdminAuditorForm: React.FC<AdminAuditorFormProps> = ({
           className="w-full px-4 py-2 bg-background border border-main-dark-grey rounded-lg text-secondary-white focus:outline-none focus:border-main-orange"
         />
       </div>
-
       <div>
         <label htmlFor="websiteUrl" className="block text-secondary-white mb-2">
           Website URL
@@ -137,7 +137,6 @@ const AdminAuditorForm: React.FC<AdminAuditorFormProps> = ({
           className="w-full px-4 py-2 bg-background border border-main-dark-grey rounded-lg text-secondary-white focus:outline-none focus:border-main-orange"
         />
       </div>
-
       <div className="flex justify-end gap-4">
         <button
           type="submit"

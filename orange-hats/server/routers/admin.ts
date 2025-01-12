@@ -399,7 +399,6 @@ export const adminRouter = router({
     .input(
       z.object({
         name: z.string(),
-        createdBy: z.string(),
         description: z.string(),
         securityUrl: z.string().url().optional(),
         imageUrl: z.string().url().optional(),
@@ -425,7 +424,6 @@ export const adminRouter = router({
       z.object({
         id: z.string(),
         name: z.string().optional(),
-        createdBy: z.string().optional(),
         description: z.string().optional(),
         securityUrl: z.string().url().optional(),
         imageUrl: z.string().url().optional(),

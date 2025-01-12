@@ -53,7 +53,7 @@ const Resources: React.FC = () => {
   };
 
   return (
-    <section className="max-w-7xl md:mx-auto mt-24">
+    <section id="resources-section" className="max-w-7xl md:mx-auto mt-24">
       <div className="bg-main-dark-grey w-screen md:w-auto rounded-t-3xl p-8 md:p-12 mx-0 md:mx-0">
         <h2 className="text-[24px] md:text-[36px] font-space-grotesk text-secondary-white mb-4 text-center">
           Security Resources For <span className="underline">You</span>

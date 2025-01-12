@@ -121,7 +121,10 @@ const AdminAuditForm: React.FC<AdminAuditFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 h-[400px] overflow-y-scroll"
+    >
       <div>
         <label htmlFor="protocol" className="block text-secondary-white mb-2">
           Protocol

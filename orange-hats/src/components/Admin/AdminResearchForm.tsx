@@ -173,7 +173,11 @@ const AdminResearchForm: React.FC<AdminResearchFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 h-[400px] overflow-y-scroll"
+    >
+      {" "}
       <div>
         <label htmlFor="title" className="block text-secondary-white mb-2">
           Title
@@ -189,7 +193,6 @@ const AdminResearchForm: React.FC<AdminResearchFormProps> = ({
           required
         />
       </div>
-
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label htmlFor="protocol" className="block text-secondary-white mb-2">
@@ -223,7 +226,6 @@ const AdminResearchForm: React.FC<AdminResearchFormProps> = ({
           />
         </div>
       </div>
-
       <div>
         <label
           htmlFor="description"
@@ -242,7 +244,6 @@ const AdminResearchForm: React.FC<AdminResearchFormProps> = ({
           required
         />
       </div>
-
       <div>
         <label
           htmlFor="publishedAt"
@@ -261,7 +262,6 @@ const AdminResearchForm: React.FC<AdminResearchFormProps> = ({
           required
         />
       </div>
-
       <div className="space-y-4">
         <div>
           <label className="block text-secondary-white mb-2">Main Image</label>
@@ -294,7 +294,6 @@ const AdminResearchForm: React.FC<AdminResearchFormProps> = ({
           )}
         </div>
       </div>
-
       <div className="flex flex-wrap gap-4">
         <button
           type="button"
@@ -325,7 +324,6 @@ const AdminResearchForm: React.FC<AdminResearchFormProps> = ({
           Add Image Placeholder
         </button>
       </div>
-
       <div data-color-mode="dark">
         <MDEditor
           value={formData.content}
@@ -334,7 +332,6 @@ const AdminResearchForm: React.FC<AdminResearchFormProps> = ({
           preview="edit"
         />
       </div>
-
       <button
         type="submit"
         disabled={isLoading || isUploadingImages}

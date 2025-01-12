@@ -81,3 +81,7 @@ export const securityToolSortAtom = atom<SecurityToolSortState>(
 
 export const currentRouteAtom = atom<string>("/");
 export const isMobileMenuOpenAtom = atom<boolean>(false);
+
+type ApplicationType = "audit" | "auditor" | "grant";
+
+export const selectedTypeAtom = atom<ApplicationType>("audit");

@@ -7,6 +7,7 @@ import { AuditorSortField } from "@/atoms/types";
 import { trpc } from "../../../utils/trpc";
 import { Auditor } from "@prisma/client";
 import Image from "next/image";
+import SponsoredJoinButtons from "../Audits/SponsoredJoin";
 
 const SortArrow: React.FC<{ direction: "asc" | "desc" }> = ({ direction }) => (
   <Image
@@ -53,14 +54,7 @@ const AuditorsView = () => {
           that have proven themselves multiple times.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-12 items-center justify-center">
-          <button className="w-full sm:w-[224px] h-[60px] bg-main-orange text-black text-[20px] font-bold rounded-[100px] hover:opacity-90 transition-opacity">
-            Sponsored Audits
-          </button>
-          <button className="w-full sm:w-[224px] h-[60px] bg-main-dark-grey text-secondary-white text-[20px] font-bold rounded-[100px] hover:opacity-90 transition-opacity">
-            Join TaskForce
-          </button>
-        </div>
+        <SponsoredJoinButtons />
 
         <div className="overflow-x-auto">
           <table className="w-full">

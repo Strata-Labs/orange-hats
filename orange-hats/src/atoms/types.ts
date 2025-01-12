@@ -1,3 +1,5 @@
+import { SecurityTool } from "@prisma/client";
+
 export type SortDirection = "asc" | "desc";
 
 export interface SortState {
@@ -53,4 +55,19 @@ export interface LoadingStates {
   isCreating: boolean;
   isUpdating: boolean;
   isDeleting: boolean;
+}
+
+export interface SecurityToolWithSignedUrl extends SerializedSecurityTool {
+  signedImageUrl: string | null;
+}
+
+export interface SerializedSecurityTool {
+  id: string;
+  name: string;
+  description: string;
+  securityUrl: string | null;
+  imageUrl: string | null;
+  imageKey: string | null;
+  createdAt: string;
+  updatedAt: string;
 }

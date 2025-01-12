@@ -68,7 +68,6 @@ const AdminTools = () => {
 
   const columns = [
     { key: "name", header: "Name" },
-    { key: "createdBy", header: "Created By" },
     { key: "description", header: "Description" },
     {
       key: "securityUrl",

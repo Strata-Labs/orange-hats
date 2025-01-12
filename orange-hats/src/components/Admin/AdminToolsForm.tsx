@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { SecurityTool } from "@prisma/client";
 import { trpc } from "../../../utils/trpc";
 import FileUpload from "./FileUpload";
+import { SerializedSecurityTool } from "@/atoms/types";
 
 interface AdminToolFormProps {
-  initialData?: Partial<SecurityTool>;
+  initialData?: Partial<SerializedSecurityTool>;
   onSubmit: (data: any) => Promise<void>;
   isLoading: boolean;
 }
@@ -16,7 +17,6 @@ const AdminToolForm: React.FC<AdminToolFormProps> = ({
 }) => {
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
-    createdBy: initialData?.createdBy || "",
     description: initialData?.description || "",
     securityUrl: initialData?.securityUrl || "",
     imageUrl: initialData?.imageUrl || "",
@@ -83,7 +83,11 @@ const AdminToolForm: React.FC<AdminToolFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 h-[400px] overflow-y-scroll"
+    >
+      {" "}
       <div>
         <label htmlFor="name" className="block text-secondary-white mb-2">
           Name
@@ -98,22 +102,6 @@ const AdminToolForm: React.FC<AdminToolFormProps> = ({
           className="w-full px-4 py-2 bg-background border border-main-dark-grey rounded-lg text-secondary-white focus:outline-none focus:border-main-orange"
         />
       </div>
-
-      <div>
-        <label htmlFor="createdBy" className="block text-secondary-white mb-2">
-          Created By
-        </label>
-        <input
-          id="createdBy"
-          name="createdBy"
-          type="text"
-          required
-          value={formData.createdBy}
-          onChange={handleChange}
-          className="w-full px-4 py-2 bg-background border border-main-dark-grey rounded-lg text-secondary-white focus:outline-none focus:border-main-orange"
-        />
-      </div>
-
       <div>
         <label className="block text-secondary-white mb-2">Tool Image</label>
         <FileUpload
@@ -132,7 +120,6 @@ const AdminToolForm: React.FC<AdminToolFormProps> = ({
           </p>
         )}
       </div>
-
       <div>
         <label
           htmlFor="description"
@@ -150,7 +137,6 @@ const AdminToolForm: React.FC<AdminToolFormProps> = ({
           className="w-full px-4 py-2 bg-background border border-main-dark-grey rounded-lg text-secondary-white focus:outline-none focus:border-main-orange resize-none"
         />
       </div>
-
       <div>
         <label
           htmlFor="securityUrl"
@@ -167,7 +153,6 @@ const AdminToolForm: React.FC<AdminToolFormProps> = ({
           className="w-full px-4 py-2 bg-background border border-main-dark-grey rounded-lg text-secondary-white focus:outline-none focus:border-main-orange"
         />
       </div>
-
       <div className="flex justify-end gap-4">
         <button
           type="submit"

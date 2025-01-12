@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import Menu from "@/components/Menu/Menu";
 import { useAtom } from "jotai";
-import { securityToolPaginationAtom } from "@/atoms";
+import { securityToolPaginationAtom, selectedTypeAtom } from "@/atoms";
 import { trpc } from "../../../utils/trpc";
-import { SecurityTool } from "@prisma/client";
-
-interface ToolWithSignedUrl extends SecurityTool {
-  signedImageUrl?: string;
-}
+import Link from "next/link";
+import { SecurityToolWithSignedUrl } from "@/atoms/types";
+import type { PaginatedResponse } from "@/atoms/types";
 
 const ToolsView = () => {
   const [pagination] = useAtom(securityToolPaginationAtom);
-  const [toolsWithUrls, setToolsWithUrls] = useState<ToolWithSignedUrl[]>([]);
-
-  const utils = trpc.useContext();
+  const [, setSelectedType] = useAtom(selectedTypeAtom);
 
   const { data: toolsData, isLoading } = trpc.public.getSecurityTools.useQuery({
     page: pagination.page,
@@ -23,36 +19,9 @@ const ToolsView = () => {
     sortDirection: "asc",
   });
 
-  useEffect(() => {
-    const fetchSignedUrls = async () => {
-      if (!toolsData?.items) return;
-
-      const toolsWithSignedUrls = await Promise.all(
-        toolsData.items.map(async (tool) => {
-          if (tool.imageKey) {
-            try {
-              const result = await utils.admin.getToolImageUrl.fetch(tool.id);
-              return {
-                ...tool,
-                signedImageUrl: result.url,
-              };
-            } catch (error) {
-              console.error(
-                `Failed to get signed URL for tool ${tool.id}:`,
-                error
-              );
-              return tool;
-            }
-          }
-          return tool;
-        })
-      );
-
-      setToolsWithUrls(toolsWithSignedUrls);
-    };
-
-    fetchSignedUrls();
-  }, [toolsData, utils.admin.getToolImageUrl]);
+  const handleGrantClick = () => {
+    setSelectedType("grant");
+  };
 
   const handleToolClick = (securityUrl: string | null) => {
     if (securityUrl) {
@@ -60,7 +29,7 @@ const ToolsView = () => {
     }
   };
 
-  const renderToolImage = (tool: ToolWithSignedUrl) => {
+  const renderToolImage = (tool: SecurityToolWithSignedUrl) => {
     const imageUrl = tool.signedImageUrl || "/PlaceHolder.png";
 
     return (
@@ -70,7 +39,7 @@ const ToolsView = () => {
           alt={tool.name}
           width={1000}
           height={1000}
-          className="object-cover rounded-t-xl"
+          className="object-cover rounded-t-xl h-[200px]"
           priority
           onError={(e) => {
             const target = e.target as HTMLImageElement;
@@ -97,9 +66,13 @@ const ToolsView = () => {
         </p>
 
         <div className="flex justify-center mb-12">
-          <button className="w-full sm:w-[224px] h-[60px] bg-main-orange text-black text-[20px] font-bold rounded-[100px] hover:opacity-90 transition-opacity">
+          <Link
+            className="w-full sm:w-[224px] h-[60px] bg-main-orange text-black text-[20px] font-bold rounded-[100px] hover:opacity-90 transition-opacity flex items-center justify-center"
+            href={"/apply"}
+            onClick={handleGrantClick}
+          >
             Apply For Grant
-          </button>
+          </Link>
         </div>
 
         {isLoading ? (
@@ -107,7 +80,7 @@ const ToolsView = () => {
         ) : (
           <div className="flex flex-col items-center">
             <div className="hidden md:grid md:grid-cols-2 gap-8 mb-12 w-full place-items-center">
-              {toolsWithUrls.map((tool) => (
+              {toolsData?.items.map((tool) => (
                 <div
                   key={tool.id}
                   className="flex flex-col items-start h-[292px] w-[460px] bg-main-dark-grey rounded-xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
@@ -134,7 +107,7 @@ const ToolsView = () => {
             </div>
 
             <div className="md:hidden flex flex-col gap-6 w-full items-center">
-              {toolsWithUrls.map((tool) => (
+              {toolsData?.items.map((tool) => (
                 <div
                   key={tool.id}
                   className="flex flex-col items-start h-[230px] w-full max-w-[380px] bg-main-dark-grey rounded-xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"

@@ -9,8 +9,10 @@ const LearnMore: React.FC = () => {
   const [, setCurrentRoute] = useAtom(currentRouteAtom);
 
   const handleLearnMore = () => {
-    setCurrentRoute("/audits");
-    router.push("/audits");
+    const resourcesSection = document.getElementById("resources-section");
+    if (resourcesSection) {
+      resourcesSection.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import Menu from "@/components/Menu/Menu";
 import { trpc } from "../../../utils/trpc";
 import StatusPopup from "./StatusPopUp";
-
-type ApplicationType = "audit" | "auditor" | "grant";
+import { useAtom } from "jotai";
+import { selectedTypeAtom } from "@/atoms";
 
 const ApplyView = () => {
-  const [selectedType, setSelectedType] = useState<ApplicationType>("audit");
+  const [selectedType, setSelectedType] = useAtom(selectedTypeAtom);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 

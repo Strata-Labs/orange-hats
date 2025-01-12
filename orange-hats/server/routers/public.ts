@@ -1,4 +1,8 @@
-import { PaginatedResponse } from "@/atoms/types";
+import {
+  PaginatedResponse,
+  SecurityToolWithSignedUrl,
+  SerializedSecurityTool,
+} from "@/atoms/types";
 import {
   auditorPaginationSchema,
   auditPaginationSchema,
@@ -6,7 +10,7 @@ import {
   securityToolPaginationSchema,
 } from "../schema/pagination";
 import { router, publicProcedure } from "../trpc";
-import { Prisma } from "@prisma/client";
+import { Prisma, SecurityTool } from "@prisma/client";
 import { z } from "zod";
 import { PdfOperationResult, s3Utils } from "../../utils/s3";
 import { TRPCError } from "@trpc/server";
@@ -15,6 +19,14 @@ import {
   ResearchPost,
   ResearchPostWithContent,
 } from "@/components/blog/ResearchList.tsx";
+
+export const serializeSecurityTool = (
+  tool: SecurityTool
+): SerializedSecurityTool => ({
+  ...tool,
+  createdAt: tool.createdAt.toISOString(),
+  updatedAt: tool.updatedAt.toISOString(),
+});
 
 export const publicRouter = router({
   getAudits: publicProcedure
@@ -285,41 +297,77 @@ export const publicRouter = router({
 
   getSecurityTools: publicProcedure
     .input(securityToolPaginationSchema)
-    .query(async ({ ctx, input }): Promise<PaginatedResponse<any>> => {
-      const { page, limit, search, sortField, sortDirection } = input;
-      const skip = (page - 1) * limit;
+    .query(
+      async ({
+        ctx,
+        input,
+      }): Promise<PaginatedResponse<SecurityToolWithSignedUrl>> => {
+        const { page, limit, search, sortField, sortDirection } = input;
+        const skip = (page - 1) * limit;
 
-      const searchCondition: Prisma.SecurityToolWhereInput = search
-        ? {
-            OR: [
-              { name: { contains: search, mode: "insensitive" } },
-              { createdBy: { contains: search, mode: "insensitive" } },
-              { description: { contains: search, mode: "insensitive" } },
-            ],
-          }
-        : {};
+        const searchCondition: Prisma.SecurityToolWhereInput = search
+          ? {
+              OR: [
+                { name: { contains: search, mode: "insensitive" } },
+                { description: { contains: search, mode: "insensitive" } },
+              ],
+            }
+          : {};
 
-      const [tools, totalItems] = await Promise.all([
-        ctx.prisma.securityTool.findMany({
-          where: searchCondition,
-          skip,
-          take: limit,
-          orderBy: { [sortField]: sortDirection },
-        }),
-        ctx.prisma.securityTool.count({ where: searchCondition }),
-      ]);
+        const [tools, totalItems] = await Promise.all([
+          ctx.prisma.securityTool.findMany({
+            where: searchCondition,
+            skip,
+            take: limit,
+            orderBy: { [sortField]: sortDirection },
+          }),
+          ctx.prisma.securityTool.count({ where: searchCondition }),
+        ]);
 
-      return {
-        items: tools,
-        metadata: {
-          currentPage: page,
-          totalPages: Math.ceil(totalItems / limit),
-          totalItems,
-          hasNextPage: page < Math.ceil(totalItems / limit),
-          hasPreviousPage: page > 1,
-        },
-      };
-    }),
+        const toolsWithSignedUrls = await Promise.all(
+          tools.map(async (tool) => {
+            const serializedTool = serializeSecurityTool(tool);
+
+            if (tool.imageKey) {
+              try {
+                const { url } = await s3Utils.getSignedDownloadUrl(
+                  tool.imageKey,
+                  3600
+                );
+                return {
+                  ...serializedTool,
+                  signedImageUrl: url,
+                };
+              } catch (error) {
+                console.error(
+                  `Failed to get signed URL for tool ${tool.id}:`,
+                  error
+                );
+                return {
+                  ...serializedTool,
+                  signedImageUrl: null,
+                };
+              }
+            }
+            return {
+              ...serializedTool,
+              signedImageUrl: null,
+            };
+          })
+        );
+
+        return {
+          items: toolsWithSignedUrls,
+          metadata: {
+            currentPage: page,
+            totalPages: Math.ceil(totalItems / limit),
+            totalItems,
+            hasNextPage: page < Math.ceil(totalItems / limit),
+            hasPreviousPage: page > 1,
+          },
+        };
+      }
+    ),
 
   getPdfDownloadUrl: publicProcedure
     .input(z.string())
