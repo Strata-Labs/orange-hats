@@ -47,7 +47,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full border-separate border-spacing-y-6">
           <thead>
             <tr className="border-b border-main-dark-grey text-[14px] md:text-[16px]">
               {columns.map((column) => (

@@ -83,7 +83,7 @@ const ToolsView = () => {
               {toolsData?.items.map((tool) => (
                 <div
                   key={tool.id}
-                  className="flex flex-col items-start h-[292px] w-[460px] bg-main-dark-grey rounded-xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
+                  className="flex flex-col items-start h-[330px] w-[460px] bg-main-dark-grey rounded-xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
                   onClick={() => handleToolClick(tool.securityUrl)}
                 >
                   <div className="relative h-[190px] w-full">

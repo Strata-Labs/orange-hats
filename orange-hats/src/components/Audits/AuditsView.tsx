@@ -73,7 +73,7 @@ const AuditsView = () => {
         <SponsoredJoinButtons />
 
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full border-separate border-spacing-y-6">
             <thead>
               <tr className="text-[10px] md:text-[16px]">
                 <th
@@ -120,18 +120,18 @@ const AuditsView = () => {
                   <tr
                     key={audit.id}
                     onClick={() => handleRowClick(audit.id)}
-                    className="cursor-pointer hover:bg-black"
+                    className="cursor-pointer hover:bg-main-orange hover:-translate-y-1 bg-main-dark-grey transition-all ease-in-out duration-500"
                   >
-                    <td className="first:rounded-l-full last:rounded-r-full bg-main-dark-grey py-4 px-6">
+                    <td className="first:rounded-l-full last:rounded-r-full py-4 px-6">
                       {audit.protocol}
                     </td>
-                    <td className="bg-main-dark-grey py-4 px-6 block sm:table-cell">
+                    <td className=" py-4 px-6 block sm:table-cell">
                       {audit.auditors.map((auditor) => auditor.name).join(", ")}
                     </td>
-                    <td className="bg-main-dark-grey py-4 px-6 hidden sm:table-cell">
+                    <td className=" py-4 px-6 hidden sm:table-cell">
                       {audit.contracts.join(", ")}
                     </td>
-                    <td className="first:rounded-l-full last:rounded-r-full bg-main-dark-grey py-4 px-6">
+                    <td className="first:rounded-l-full last:rounded-r-full py-4 px-6">
                       {new Date(audit.publishedAt).toLocaleDateString()}
                     </td>
                   </tr>

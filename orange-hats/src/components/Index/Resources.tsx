@@ -58,9 +58,13 @@ const Resources: React.FC = () => {
         <h2 className="text-[24px] md:text-[36px] font-space-grotesk text-secondary-white mb-4 text-center">
           Security Resources For <span className="underline">You</span>
         </h2>
-        <p className="text-secondary-white mb-12 text-[16px] md:text-[20px] font-space-grotesk font-light text-center">
-          Enter into the world of sBTC with these resources
-        </p>
+        <div className="flex flex-col items-center justify-center">
+          {" "}
+          <p className="text-secondary-white mb-12 text-[16px] md:text-[20px] font-space-grotesk font-light text-center md:w-[650px]">
+            Free security resources for the Clarity community. Click into any of
+            the four modules below or apply to get involved.
+          </p>
+        </div>
 
         <div className="flex flex-col items-center md:items-stretch">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 w-full place-items-center">
