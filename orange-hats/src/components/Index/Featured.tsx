@@ -46,14 +46,6 @@ const Featured: React.FC = () => {
 
   const renderEmptyState = () => (
     <div className="flex flex-col items-center justify-center py-8">
-      <div className="w-16 h-16 mb-4 relative">
-        <Image
-          src="/PlaceHolder.png"
-          alt="No content"
-          fill
-          className="object-contain"
-        />
-      </div>
       <p className="text-secondary-white text-lg mb-2">No research posts yet</p>
       <p className="text-secondary-white opacity-60 text-sm text-center max-w-md">
         Check back soon for security research, analysis, and important findings
