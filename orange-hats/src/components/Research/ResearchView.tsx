@@ -35,6 +35,7 @@ const ResearchView: React.FC = () => {
   const router = useRouter();
   const [sortState, setSortState] = useAtom(researchSortAtom);
   const [pagination, setPagination] = useAtom(researchPaginationAtom);
+  const utils = trpc.useContext();
 
   const { data: researchData, isLoading } = trpc.public.getResearch.useQuery({
     page: pagination.page,
@@ -44,12 +45,15 @@ const ResearchView: React.FC = () => {
     search: pagination.search,
   });
 
-  const handleSort = (field: ResearchSortField) => {
-    setSortState((prev) => ({
-      field,
-      direction:
-        prev.field === field && prev.direction === "asc" ? "desc" : "asc",
-    }));
+  const handleSort = async (field: ResearchSortField) => {
+    const newDirection =
+      field === sortState.field && sortState.direction === "asc"
+        ? "desc"
+        : "asc";
+
+    setSortState({ field, direction: newDirection });
+
+    await utils.public.getResearch.invalidate();
   };
 
   const handlePageChange = (newPage: number) => {

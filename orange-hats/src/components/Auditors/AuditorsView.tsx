@@ -8,6 +8,7 @@ import { trpc } from "../../../utils/trpc";
 import { Auditor } from "@prisma/client";
 import Image from "next/image";
 import SponsoredJoinButtons from "../Audits/SponsoredJoin";
+import Pagination from "../Pagination";
 
 const SortArrow: React.FC<{ direction: "asc" | "desc" }> = ({ direction }) => (
   <Image
@@ -22,7 +23,12 @@ const SortArrow: React.FC<{ direction: "asc" | "desc" }> = ({ direction }) => (
 const AuditorsView = () => {
   const router = useRouter();
   const [sortState, setSortState] = useAtom(auditorSortAtom);
-  const [pagination] = useAtom(auditorPaginationAtom);
+  const [pagination, setPagination] = useAtom(auditorPaginationAtom);
+  const utils = trpc.useContext();
+
+  const handlePageChange = (newPage: number) => {
+    setPagination((prev) => ({ ...prev, page: newPage }));
+  };
 
   const { data: auditorsData, isLoading } = trpc.public.getAuditors.useQuery({
     page: pagination.page,
@@ -31,12 +37,15 @@ const AuditorsView = () => {
     sortDirection: sortState.direction,
   });
 
-  const handleSort = (field: AuditorSortField) => {
-    setSortState((prev) => ({
-      field,
-      direction:
-        prev.field === field && prev.direction === "asc" ? "desc" : "asc",
-    }));
+  const handleSort = async (field: AuditorSortField) => {
+    const newDirection =
+      field === sortState.field && sortState.direction === "asc"
+        ? "desc"
+        : "asc";
+
+    setSortState({ field, direction: newDirection });
+
+    await utils.public.getAuditors.invalidate();
   };
 
   return (
@@ -117,6 +126,15 @@ const AuditorsView = () => {
             </tbody>
           </table>
         </div>
+        {auditorsData && auditorsData.metadata.totalPages > 1 && (
+          <Pagination
+            currentPage={pagination.page}
+            totalPages={auditorsData.metadata.totalPages}
+            hasNextPage={auditorsData.metadata.hasNextPage}
+            hasPreviousPage={auditorsData.metadata.hasPreviousPage}
+            onPageChange={handlePageChange}
+          />
+        )}
       </main>
     </div>
   );

@@ -33,7 +33,6 @@ export const publicRouter = router({
     .input(auditPaginationSchema)
     .query(async ({ ctx, input }): Promise<PaginatedResponse<any>> => {
       const { page, limit, search, sortField, sortDirection } = input;
-      const skip = (page - 1) * limit;
 
       const searchCondition: Prisma.AuditWhereInput = search
         ? {
@@ -44,27 +43,55 @@ export const publicRouter = router({
           }
         : {};
 
-      const [audits, totalItems] = await Promise.all([
-        ctx.prisma.audit.findMany({
-          where: searchCondition,
-          include: {
-            auditors: {
-              select: {
-                id: true,
-                name: true,
-                team: true,
-              },
+      const allAudits = await ctx.prisma.audit.findMany({
+        where: searchCondition,
+        include: {
+          auditors: {
+            select: {
+              id: true,
+              name: true,
+              team: true,
             },
+            orderBy:
+              sortField === "auditors"
+                ? {
+                    name: sortDirection,
+                  }
+                : undefined,
           },
-          skip,
-          take: limit,
-          orderBy: { [sortField]: sortDirection },
-        }),
-        ctx.prisma.audit.count({ where: searchCondition }),
-      ]);
+        },
+        orderBy:
+          sortField === "auditors"
+            ? undefined
+            : {
+                [sortField]: sortDirection,
+              },
+      });
+
+      if (sortField === "auditors") {
+        allAudits.sort((a, b) => {
+          const aNames = a.auditors
+            .map((auditor) => auditor.name.toLowerCase())
+            .sort();
+          const bNames = b.auditors
+            .map((auditor) => auditor.name.toLowerCase())
+            .sort();
+
+          const aFirstName = aNames[0] || "";
+          const bFirstName = bNames[0] || "";
+
+          return sortDirection === "asc"
+            ? aFirstName.localeCompare(bFirstName)
+            : bFirstName.localeCompare(aFirstName);
+        });
+      }
+
+      const totalItems = allAudits.length;
+      const skip = (page - 1) * limit;
+      const paginatedAudits = allAudits.slice(skip, skip + limit);
 
       return {
-        items: audits,
+        items: paginatedAudits,
         metadata: {
           currentPage: page,
           totalPages: Math.ceil(totalItems / limit),
@@ -90,6 +117,10 @@ export const publicRouter = router({
           }
         : {};
 
+      const orderBy: Prisma.AuditorOrderByWithRelationInput = {
+        [sortField]: sortDirection,
+      };
+
       const [auditors, totalItems] = await Promise.all([
         ctx.prisma.auditor.findMany({
           where: searchCondition,
@@ -104,7 +135,7 @@ export const publicRouter = router({
           },
           skip,
           take: limit,
-          orderBy: { [sortField]: sortDirection },
+          orderBy,
         }),
         ctx.prisma.auditor.count({ where: searchCondition }),
       ]);
@@ -142,13 +173,17 @@ export const publicRouter = router({
             }
           : {};
 
+        const orderBy: Prisma.ResearchOrderByWithRelationInput = {
+          [sortField]: sortDirection,
+        };
+
         try {
           const [research, totalItems] = await Promise.all([
             ctx.prisma.research.findMany({
               where: searchCondition,
               skip,
               take: limit,
-              orderBy: { [sortField]: sortDirection },
+              orderBy,
             }),
             ctx.prisma.research.count({ where: searchCondition }),
           ]);
@@ -314,12 +349,16 @@ export const publicRouter = router({
             }
           : {};
 
+        const orderBy: Prisma.SecurityToolOrderByWithRelationInput = {
+          [sortField]: sortDirection,
+        };
+
         const [tools, totalItems] = await Promise.all([
           ctx.prisma.securityTool.findMany({
             where: searchCondition,
             skip,
             take: limit,
-            orderBy: { [sortField]: sortDirection },
+            orderBy,
           }),
           ctx.prisma.securityTool.count({ where: searchCondition }),
         ]);

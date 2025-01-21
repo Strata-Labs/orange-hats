@@ -7,7 +7,11 @@ export interface SortState {
   direction: SortDirection;
 }
 
-export type AuditSortField = "protocol" | "publishedAt" | "createdAt";
+export type AuditSortField =
+  | "protocol"
+  | "publishedAt"
+  | "createdAt"
+  | "auditors";
 
 export type AuditorSortField = "name" | "team" | "createdAt";
 

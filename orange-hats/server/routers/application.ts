@@ -9,7 +9,7 @@ export const applicationsRouter = router({
         email: z.string().email(),
         name: z.string(),
         githubUrl: z.string().url(),
-        applicationUrl: z.string().url(),
+        applicationUrl: z.string().url().optional(),
         previousAudits: z.array(z.string()),
         yearsInClarity: z.number(),
         yearsInSecurity: z.number(),

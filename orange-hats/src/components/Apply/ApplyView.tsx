@@ -5,6 +5,17 @@ import StatusPopup from "./StatusPopUp";
 import { useAtom } from "jotai";
 import { selectedTypeAtom } from "@/atoms";
 
+interface AuditorFormState {
+  email: string;
+  name: string;
+  githubUrl: string;
+  applicationUrl?: string;
+  previousAudits: string[];
+  yearsInClarity: number;
+  yearsInSecurity: number;
+  referral: string;
+}
+
 const ApplyView = () => {
   const [selectedType, setSelectedType] = useAtom(selectedTypeAtom);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
@@ -56,7 +67,7 @@ const ApplyView = () => {
     isNewLaunch: false,
   });
 
-  const [auditorForm, setAuditorForm] = useState({
+  const [auditorForm, setAuditorForm] = useState<AuditorFormState>({
     email: "",
     name: "",
     githubUrl: "",
@@ -469,10 +480,9 @@ const ApplyView = () => {
 
           <div>
             <label className="block text-secondary-white mb-2 text-lg font-space-grotesk">
-              Application URL
+              Application URL (Optional)
             </label>
             <textarea
-              required
               value={auditorForm.applicationUrl}
               onChange={(e) => {
                 setAuditorForm((prev) => ({

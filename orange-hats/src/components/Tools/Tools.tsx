@@ -7,10 +7,15 @@ import { trpc } from "../../../utils/trpc";
 import Link from "next/link";
 import { SecurityToolWithSignedUrl } from "@/atoms/types";
 import type { PaginatedResponse } from "@/atoms/types";
+import Pagination from "../Pagination";
 
 const ToolsView = () => {
-  const [pagination] = useAtom(securityToolPaginationAtom);
+  const [pagination, setPagination] = useAtom(securityToolPaginationAtom);
   const [, setSelectedType] = useAtom(selectedTypeAtom);
+
+  const handlePageChange = (newPage: number) => {
+    setPagination((prev) => ({ ...prev, page: newPage }));
+  };
 
   const { data: toolsData, isLoading } = trpc.public.getSecurityTools.useQuery({
     page: pagination.page,
@@ -78,61 +83,62 @@ const ToolsView = () => {
         {isLoading ? (
           <div className="text-center py-4">Loading...</div>
         ) : (
-          <div className="flex flex-col items-center">
-            <div className="hidden md:grid md:grid-cols-2 gap-8 mb-12 w-full place-items-center">
-              {toolsData?.items.map((tool) => (
-                <div
-                  key={tool.id}
-                  className="flex flex-col items-start h-[330px] w-[460px] bg-main-dark-grey rounded-xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
-                  onClick={() => handleToolClick(tool.securityUrl)}
-                >
-                  <div className="relative h-[190px] w-full">
-                    {renderToolImage(tool)}
-                    {tool.securityUrl && (
-                      <div className="absolute top-4 right-4 bg-main-orange text-black px-3 py-1 rounded-full text-sm">
-                        Visit Tool
-                      </div>
-                    )}
+          <>
+            <div className="flex flex-col items-center">
+              <div className="hidden md:grid md:grid-cols-2 gap-8 mb-12 w-full place-items-center">
+                {toolsData?.items.map((tool) => (
+                  <div
+                    key={tool.id}
+                    className="flex flex-col items-start h-[330px] w-[460px] bg-main-dark-grey rounded-xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
+                    onClick={() => handleToolClick(tool.securityUrl)}
+                  >
+                    <div className="relative h-[190px] w-full">
+                      {renderToolImage(tool)}
+                    </div>
+                    <div className="p-6 flex-1 w-full">
+                      <h3 className="text-[22px] font-space-grotesk font-bold text-secondary-white mb-2">
+                        {tool.name}
+                      </h3>
+                      <p className="text-secondary-white text-base line-clamp-2">
+                        {tool.description}
+                      </p>
+                    </div>
                   </div>
-                  <div className="p-6 flex-1 w-full">
-                    <h3 className="text-[22px] font-space-grotesk font-bold text-secondary-white mb-2">
-                      {tool.name}
-                    </h3>
-                    <p className="text-secondary-white text-base line-clamp-2">
-                      {tool.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <div className="md:hidden flex flex-col gap-6 w-full items-center">
-              {toolsData?.items.map((tool) => (
-                <div
-                  key={tool.id}
-                  className="flex flex-col items-start h-[230px] w-full max-w-[380px] bg-main-dark-grey rounded-xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
-                  onClick={() => handleToolClick(tool.securityUrl)}
-                >
-                  <div className="relative h-[150px] w-full">
-                    {renderToolImage(tool)}
-                    {tool.securityUrl && (
-                      <div className="absolute top-4 right-4 bg-main-orange text-black px-3 py-1 rounded-full text-sm">
-                        Visit Tool
-                      </div>
-                    )}
+              <div className="md:hidden flex flex-col gap-6 w-full items-center">
+                {toolsData?.items.map((tool) => (
+                  <div
+                    key={tool.id}
+                    className="flex flex-col items-start h-[230px] w-full max-w-[380px] bg-main-dark-grey rounded-xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
+                    onClick={() => handleToolClick(tool.securityUrl)}
+                  >
+                    <div className="relative h-[150px] w-full">
+                      {renderToolImage(tool)}
+                    </div>
+                    <div className="p-4 flex-1 w-full">
+                      <h3 className="text-[20px] font-space-grotesk font-bold text-secondary-white">
+                        {tool.name}
+                      </h3>
+                      <p className="text-secondary-white text-sm line-clamp-1">
+                        {tool.description}
+                      </p>
+                    </div>
                   </div>
-                  <div className="p-4 flex-1 w-full">
-                    <h3 className="text-[20px] font-space-grotesk font-bold text-secondary-white">
-                      {tool.name}
-                    </h3>
-                    <p className="text-secondary-white text-sm line-clamp-1">
-                      {tool.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+            {toolsData && toolsData.metadata.totalPages > 1 && (
+              <Pagination
+                currentPage={pagination.page}
+                totalPages={toolsData.metadata.totalPages}
+                hasNextPage={toolsData.metadata.hasNextPage}
+                hasPreviousPage={toolsData.metadata.hasPreviousPage}
+                onPageChange={handlePageChange}
+              />
+            )}
+          </>
         )}
       </main>
     </div>

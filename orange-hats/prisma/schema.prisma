@@ -75,7 +75,7 @@ model AuditorApplication {
   email           String    @unique
   name            String
   githubUrl       String
-  applicationUrl  String    
+  applicationUrl  String?    
   previousAudits  String[]
   yearsInClarity  Int
   yearsInSecurity Int

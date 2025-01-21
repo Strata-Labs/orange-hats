@@ -8,6 +8,7 @@ import { trpc } from "../../../utils/trpc";
 import { Audit, Auditor } from "@prisma/client";
 import Image from "next/image";
 import SponsoredJoinButtons from "./SponsoredJoin";
+import Pagination from "../Pagination";
 
 interface AuditWithAuditors extends Audit {
   auditors: Auditor[];
@@ -26,7 +27,7 @@ const SortArrow: React.FC<{ direction: "asc" | "desc" }> = ({ direction }) => (
 const AuditsView = () => {
   const router = useRouter();
   const [sortState, setSortState] = useAtom(auditSortAtom);
-  const [pagination] = useAtom(auditPaginationAtom);
+  const [pagination, setPagination] = useAtom(auditPaginationAtom);
   const utils = trpc.useContext();
 
   const { data: auditsData, isLoading } = trpc.public.getAudits.useQuery({
@@ -36,12 +37,19 @@ const AuditsView = () => {
     sortDirection: sortState.direction,
   });
 
-  const handleSort = (field: AuditSortField) => {
-    setSortState((prev) => ({
-      field,
-      direction:
-        prev.field === field && prev.direction === "asc" ? "desc" : "asc",
-    }));
+  const handleSort = async (field: AuditSortField) => {
+    const newDirection =
+      field === sortState.field && sortState.direction === "asc"
+        ? "desc"
+        : "asc";
+
+    setSortState({ field, direction: newDirection });
+
+    await utils.public.getAudits.invalidate();
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPagination((prev) => ({ ...prev, page: newPage }));
   };
 
   const handleRowClick = async (auditId: string) => {
@@ -66,8 +74,17 @@ const AuditsView = () => {
 
         <p className="text-[18px] md:text-[32px] font-space-grotesk text-secondary-white mb-8 text-center">
           Here you&apos;ll find all existing Stacks audits provided by auditors.
-          If any is missing, please make PR here. If you&apos;re a team looking
-          to apply for an OrangeHats sponsored audits, click below.
+          If any is missing, please make PR{" "}
+          <a
+            href="https://github.com/Strata-Labs/orange-hats"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-main-orange underline"
+          >
+            here
+          </a>
+          . If you&apos;re a team looking to apply for an OrangeHats sponsored
+          audit, click below.
         </p>
 
         <SponsoredJoinButtons />
@@ -87,10 +104,10 @@ const AuditsView = () => {
                 </th>
                 <th
                   className="py-4 px-6 text-left cursor-pointer hover:text-main-orange block sm:table-cell"
-                  onClick={() => handleSort("publishedAt")}
+                  onClick={() => handleSort("auditors")}
                 >
                   Auditor
-                  {sortState.field === "publishedAt" && (
+                  {sortState.field === "auditors" && (
                     <SortArrow direction={sortState.direction} />
                   )}
                 </th>
@@ -116,7 +133,7 @@ const AuditsView = () => {
                   </td>
                 </tr>
               ) : (
-                auditsData?.items.map((audit: AuditWithAuditors) => (
+                auditsData?.items?.map((audit: AuditWithAuditors) => (
                   <tr
                     key={audit.id}
                     onClick={() => handleRowClick(audit.id)}
@@ -125,10 +142,10 @@ const AuditsView = () => {
                     <td className="first:rounded-l-full last:rounded-r-full py-4 px-6">
                       {audit.protocol}
                     </td>
-                    <td className=" py-4 px-6 block sm:table-cell">
+                    <td className="py-4 px-6 block sm:table-cell">
                       {audit.auditors.map((auditor) => auditor.name).join(", ")}
                     </td>
-                    <td className=" py-4 px-6 hidden sm:table-cell">
+                    <td className="py-4 px-6 hidden sm:table-cell">
                       {audit.contracts.join(", ")}
                     </td>
                     <td className="first:rounded-l-full last:rounded-r-full py-4 px-6">
@@ -140,6 +157,15 @@ const AuditsView = () => {
             </tbody>
           </table>
         </div>
+        {auditsData && auditsData.metadata.totalPages > 1 && (
+          <Pagination
+            currentPage={pagination.page}
+            totalPages={auditsData.metadata.totalPages}
+            hasNextPage={auditsData.metadata.hasNextPage}
+            hasPreviousPage={auditsData.metadata.hasPreviousPage}
+            onPageChange={handlePageChange}
+          />
+        )}
       </main>
     </div>
   );
